@@ -48,7 +48,7 @@ build_image() {
     --build-arg NVIM_PLUGIN_MANAGER="${plugin_manager}" \
     -t "${tag}" \
     --load \
-    .
+    context
 
   echo ">>> Successfully built: ${tag}"
   echo "----------------------------------------"

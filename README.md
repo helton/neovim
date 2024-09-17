@@ -20,19 +20,19 @@ Containerized environments for popular Neovim distributions and quick starters. 
 - **macOS**:
   - Runs seamlessly on macOS (including Apple Silicon) through Docker Desktop's virtualization layer.
 
-## Supported Neovim Configurations
+### Supported Neovim Configurations
 
 - [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)
 - [LazyVim](https://github.com/LazyVim/LazyVim)
 - [NVChad](https://github.com/NvChad/NVChad)
 - [AstroVim](https://github.com/AstroNvim/AstroNvim)
 
-## Base Images
+### Base Images
 
 - **Ubuntu 24.04**: Latest LTS release.
 - **Alpine 3.20**: Latest release.
 
-## Pre-installed Tools
+### Pre-installed Tools
 
 - `bat`: A `cat` clone with syntax highlighting and Git integration.
 - `curl`: Tool to transfer data from or to a server.
@@ -44,6 +44,13 @@ Containerized environments for popular Neovim distributions and quick starters. 
 - `wget`: Non-interactive network downloader.
 - `zoxide`: A smarter `cd` command.
 - `zsh`: Z shell, an extended Bourne shell with many improvements.
+
+### Languages Tooling/Runtimes
+
+- Python 3.12.3
+- Golang 1.20.5
+- Rust 1.81.0
+- Node 20.x
 
 ## Installation
 
