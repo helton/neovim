@@ -67,12 +67,17 @@ RUN ln -s /usr/local/bin/python3.12 /usr/local/bin/python3 && \
 RUN python --version
 
 # Node
-ENV PATH="/usr/local/node/bin:${PATH}"
-ENV NODE_VERSION=20.9.0
-RUN curl -LO https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz && \
-    tar -xJf node-v${NODE_VERSION}-linux-x64.tar.xz && \
-    mv node-v${NODE_VERSION}-linux-x64 /usr/local/node && \
-    rm node-v${NODE_VERSION}-linux-x64.tar.xz
+ENV NODE_VERSION=20
+RUN if [ -x "$(command -v apt-get)" ]; then \
+        curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
+        apt-get install -y nodejs && \
+        apt-get clean && \
+        rm -rf /var/lib/apt/lists/*; \
+    elif [ -x "$(command -v apk)" ]; then \
+        apk add --no-cache nodejs npm; \
+    else \
+        echo "Unsupported package manager. Only apt-get and apk are supported." && exit 1; \
+    fi
 RUN node --version && npm --version
 
 # Neovim
