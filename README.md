@@ -41,6 +41,7 @@ Containerized environments for popular Neovim distributions and quick starters. 
 ### Pre-installed Tools
 
 - `bat`: A `cat` clone with syntax highlighting and Git integration.
+- `cmake`: C/C++ build tool.
 - `curl`: Tool to transfer data from or to a server.
 - `fd-find`: Simple, fast, and user-friendly alternative to `find`.
 - `fzf`: A general-purpose command-line fuzzy finder.
@@ -52,10 +53,10 @@ Containerized environments for popular Neovim distributions and quick starters. 
 
 ### Languages Tooling/Runtimes
 
-- Python 3.12.3
-- Golang 1.20.5
+- Python 3.12.6
+- Golang 1.23.1
 - Rust 1.81.0
-- Node 20.x
+- Node 20.17.0
 
 ## Installation
 

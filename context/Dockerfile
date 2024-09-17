@@ -1,22 +1,23 @@
-ARG BASE_IMAGE
+ARG BASE_IMAGE=ubuntu:latest
 FROM ${BASE_IMAGE}
 
 ARG NVIM_PLUGIN_MANAGER
 ARG NVIM_CONFIG_REPO_URL
 
-ENV PATH="/usr/local/go/bin:/root/.cargo/bin:/usr/local/bin:${PATH}"
+ENV PATH="/usr/local/go/bin:/root/.cargo/bin:/usr/local/bin:/usr/bin:${PATH}"
+ENV RUSTUP_HOME=/usr/local/rustup
+ENV CARGO_HOME=/usr/local/cargo
+ENV PATH="/usr/local/cargo/bin:${PATH}"
 
-ENV COMMON_PACKAGES="bat ca-certificates curl fzf git ripgrep wget zoxide zsh"
+ENV COMMON_PACKAGES="bat ca-certificates cmake curl fzf git ripgrep wget zoxide zsh"
 ENV APT_EXTRA_PACKAGES="build-essential fd-find"
-ENV APK_EXTRA_PACKAGES="autoconf automake build-base cmake gettext-dev libtool libtermkey-dev libvterm-dev libuv-dev jansson-dev ninja pkgconf python3 py3-pip nodejs npm"
+ENV APK_EXTRA_PACKAGES="autoconf automake build-base fd gettext-dev libtool libtermkey-dev libvterm-dev libuv-dev jansson-dev ninja pkgconf"
 
 RUN if [ -x "$(command -v apt-get)" ]; then \
         apt-get update && \
-        apt-get install -y --no-install-recommends $COMMON_PACKAGES $APT_EXTRA_PACKAGES python3 python3-pip && \
+        apt-get install -y --no-install-recommends $COMMON_PACKAGES $APT_EXTRA_PACKAGES && \
         apt-get clean && \
-        rm -rf /var/lib/apt/lists/* && \
-        curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-        apt-get install -y nodejs; \
+        rm -rf /var/lib/apt/lists/*; \
     elif [ -x "$(command -v apk)" ]; then \
         apk update && \
         apk add --no-cache $COMMON_PACKAGES $APK_EXTRA_PACKAGES && \
@@ -25,41 +26,64 @@ RUN if [ -x "$(command -v apt-get)" ]; then \
         echo "Unsupported package manager. Only apt-get and apk are supported." && exit 1; \
     fi
 
+# fd
 RUN if [ -x "$(command -v fdfind)" ]; then \
         ln -s "$(command -v fdfind)" /usr/local/bin/fd; \
     elif [ -x "$(command -v fd)" ]; then \
         ln -s "$(command -v fd)" /usr/local/bin/fd; \
     fi
 
-RUN if [ -x "$(command -v apt-get)" ]; then \
-        git clone --depth 1 https://github.com/neovim/neovim.git /tmp/neovim && \
-        cd /tmp/neovim && \
-        make CMAKE_BUILD_TYPE=Release && \
-        make install && \
-        cd / && \
-        rm -rf /tmp/neovim && \
-        nvim --version; \
-    elif [ -x "$(command -v apk)" ]; then \
-        git clone --depth 1 https://github.com/neovim/neovim.git /tmp/neovim && \
-        cd /tmp/neovim && \
-        make CMAKE_BUILD_TYPE=Release && \
-        make install && \
-        cd / && \
-        rm -rf /tmp/neovim && \
-        nvim --version; \
-    fi
-
-RUN if [ -x "$(command -v rustup)" ]; then \
-        rustup update; \
-    fi
-
-RUN curl -LO https://golang.org/dl/go1.20.5.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.20.5.linux-amd64.tar.gz && \
-    rm go1.20.5.linux-amd64.tar.gz
-
+# zsh + ohmyzsh
 RUN if [ -x "$(command -v zsh)" ]; then \
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; \
     fi
+
+# Rust
+RUN if ! command -v rustup > /dev/null; then \
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --no-modify-path && \
+        rustup update; \
+    fi
+
+# Golang
+ENV GOLANG_VERSION=1.23.1
+RUN curl -LO https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go${GOLANG_VERSION}.linux-amd64.tar.gz && \
+    rm go${GOLANG_VERSION}.linux-amd64.tar.gz
+
+# Python
+ENV PYTHON_VERSION=3.12.6
+RUN curl -LO https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz && \
+    tar -xzf Python-${PYTHON_VERSION}.tgz && \
+    cd Python-${PYTHON_VERSION} && \
+    ./configure --enable-optimizations && \
+    make -j$(nproc) && \
+    make altinstall && \
+    cd / && \
+    rm -rf Python-${PYTHON_VERSION} Python-${PYTHON_VERSION}.tgz
+
+RUN python3 --version
+
+# Node
+ENV NODE_VERSION=20.9.0
+RUN curl -LO https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz && \
+    tar -xJf node-v${NODE_VERSION}-linux-x64.tar.xz && \
+    mv node-v${NODE_VERSION}-linux-x64 /usr/local/node && \
+    ln -s /usr/local/node/bin/node /usr/local/bin/node && \
+    ln -s /usr/local/node/bin/npm /usr/local/bin/npm && \
+    rm node-v${NODE_VERSION}-linux-x64.tar.xz
+
+RUN node --version && \
+    npm --version
+
+# Neovim
+RUN git clone --depth 1 https://github.com/neovim/neovim.git /tmp/neovim && \
+    cd /tmp/neovim && \
+    make CMAKE_BUILD_TYPE=Release && \
+    make install && \
+    cd / && \
+    rm -rf /tmp/neovim
+
+RUN nvim --version
 
 RUN mkdir -p /root/.config && \
     git clone "${NVIM_CONFIG_REPO_URL}" /root/.config/nvim && \
