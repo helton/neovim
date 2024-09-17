@@ -4,14 +4,10 @@ FROM ${BASE_IMAGE}
 ARG NVIM_PLUGIN_MANAGER
 ARG NVIM_CONFIG_REPO_URL
 
-ENV PATH="/usr/local/go/bin:/root/.cargo/bin:/usr/local/bin:/usr/bin:${PATH}"
-ENV RUSTUP_HOME=/usr/local/rustup
-ENV CARGO_HOME=/usr/local/cargo
-ENV PATH="/usr/local/cargo/bin:${PATH}"
-
-ENV COMMON_PACKAGES="bat ca-certificates cmake curl fzf git ripgrep wget zoxide zsh"
-ENV APT_EXTRA_PACKAGES="build-essential fd-find"
-ENV APK_EXTRA_PACKAGES="autoconf automake build-base fd gettext-dev libtool libtermkey-dev libvterm-dev libuv-dev jansson-dev ninja pkgconf"
+ENV PATH="/usr/local/bin:/usr/bin:${PATH}"
+ENV COMMON_PACKAGES="bat ca-certificates cmake curl fzf gettext git jq ripgrep wget zoxide zsh"
+ENV APT_EXTRA_PACKAGES="build-essential fd-find zlib1g-dev"
+ENV APK_EXTRA_PACKAGES="autoconf automake build-base fd gettext-dev libtool libtermkey-dev libvterm-dev libuv-dev jansson-dev ninja pkgconf zlib-dev"
 
 RUN if [ -x "$(command -v apt-get)" ]; then \
         apt-get update && \
@@ -39,16 +35,22 @@ RUN if [ -x "$(command -v zsh)" ]; then \
     fi
 
 # Rust
+ENV RUSTUP_HOME=/usr/local/rustup
+ENV CARGO_HOME=/usr/local/cargo
+ENV PATH="/usr/local/cargo/bin:${PATH}"
 RUN if ! command -v rustup > /dev/null; then \
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --no-modify-path && \
         rustup update; \
     fi
+RUN cargo --version && rustup --version
 
 # Golang
+ENV PATH="/usr/local/go/bin:${PATH}"
 ENV GOLANG_VERSION=1.23.1
 RUN curl -LO https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz && \
     tar -C /usr/local -xzf go${GOLANG_VERSION}.linux-amd64.tar.gz && \
     rm go${GOLANG_VERSION}.linux-amd64.tar.gz
+RUN go version
 
 # Python
 ENV PYTHON_VERSION=3.12.6
@@ -60,29 +62,27 @@ RUN curl -LO https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON
     make altinstall && \
     cd / && \
     rm -rf Python-${PYTHON_VERSION} Python-${PYTHON_VERSION}.tgz
-
-RUN python3 --version
+RUN ln -s /usr/local/bin/python3.12 /usr/local/bin/python3 && \
+    ln -s /usr/local/bin/python3.12 /usr/local/bin/python
+RUN python --version
 
 # Node
+ENV PATH="/usr/local/node/bin:${PATH}"
 ENV NODE_VERSION=20.9.0
 RUN curl -LO https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz && \
     tar -xJf node-v${NODE_VERSION}-linux-x64.tar.xz && \
     mv node-v${NODE_VERSION}-linux-x64 /usr/local/node && \
-    ln -s /usr/local/node/bin/node /usr/local/bin/node && \
-    ln -s /usr/local/node/bin/npm /usr/local/bin/npm && \
     rm node-v${NODE_VERSION}-linux-x64.tar.xz
-
-RUN node --version && \
-    npm --version
+RUN node --version && npm --version
 
 # Neovim
-RUN git clone --depth 1 https://github.com/neovim/neovim.git /tmp/neovim && \
+ENV NEOVIM_VERSION=0.10.1
+RUN git clone --depth 1 --branch v${NEOVIM_VERSION} https://github.com/neovim/neovim.git /tmp/neovim && \
     cd /tmp/neovim && \
     make CMAKE_BUILD_TYPE=Release && \
     make install && \
     cd / && \
     rm -rf /tmp/neovim
-
 RUN nvim --version
 
 RUN mkdir -p /root/.config && \
@@ -102,12 +102,12 @@ RUN case "${NVIM_PLUGIN_MANAGER}" in \
     esac
 
 RUN case "${NVIM_PLUGIN_MANAGER}" in \
-        "packer") \
-            nvim --headless +PackerSync +TSInstallSync all -c 'sleep 20' +qa ;; \
-        "plug") \
-            nvim --headless +PlugInstall +TSInstallSync all -c 'sleep 20' +qa ;; \
-        "lazy") \
-            nvim --headless +Lazy sync +TSInstallSync all -c 'sleep 20' +qa ;; \
-    esac
+    "packer") \
+        nvim --headless -c 'PackerSync | TSInstallSync all | sleep 20 | qa' ;; \
+    "plug") \
+        nvim --headless -c 'PlugInstall | TSInstallSync all | sleep 20 | qa' ;; \
+    "lazy") \
+        nvim --headless -c 'Lazy sync | TSInstallSync all | sleep 20 | qa' ;; \
+esac
 
 CMD ["nvim"]

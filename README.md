@@ -46,6 +46,7 @@ Containerized environments for popular Neovim distributions and quick starters. 
 - `fd-find`: Simple, fast, and user-friendly alternative to `find`.
 - `fzf`: A general-purpose command-line fuzzy finder.
 - `git`: Version control system.
+- `jq`: A lightweight and flexible command-line JSON processor.
 - `ripgrep`: Line-oriented search tool that recursively searches directories.
 - `wget`: Non-interactive network downloader.
 - `zoxide`: A smarter `cd` command.
