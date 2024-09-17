@@ -3,7 +3,6 @@
 set -e
 
 base_images=(
-  "ubuntu:24.04"
   "alpine:3.20"
 )
 

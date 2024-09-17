@@ -21,19 +21,9 @@ jobs:
           - repo_name: kickstart.nvim
             repo_url: https://github.com/nvim-lua/kickstart.nvim
             plugin_manager: lazy
-            base_image_name: ubuntu
-            base_image_version: "24.04"
-          - repo_name: kickstart.nvim
-            repo_url: https://github.com/nvim-lua/kickstart.nvim
-            plugin_manager: lazy
             base_image_name: alpine
             base_image_version: "3.20"
 
-          - repo_name: lazyvim
-            repo_url: https://github.com/LazyVim/starter
-            plugin_manager: lazy
-            base_image_name: ubuntu
-            base_image_version: "24.04"
           - repo_name: lazyvim
             repo_url: https://github.com/LazyVim/starter
             plugin_manager: lazy
@@ -43,19 +33,9 @@ jobs:
           - repo_name: nvchad
             repo_url: https://github.com/NvChad/starter
             plugin_manager: packer
-            base_image_name: ubuntu
-            base_image_version: "24.04"
-          - repo_name: nvchad
-            repo_url: https://github.com/NvChad/starter
-            plugin_manager: packer
             base_image_name: alpine
             base_image_version: "3.20"
 
-          - repo_name: astronvim
-            repo_url: https://github.com/AstroNvim/template
-            plugin_manager: lazy
-            base_image_name: ubuntu
-            base_image_version: "24.04"
           - repo_name: astronvim
             repo_url: https://github.com/AstroNvim/template
             plugin_manager: lazy

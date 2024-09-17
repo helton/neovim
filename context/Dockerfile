@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=ubuntu:latest
+ARG BASE_IMAGE=alpine:latest
 FROM ${BASE_IMAGE}
 
 ARG NVIM_PLUGIN_MANAGER

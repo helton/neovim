@@ -15,7 +15,7 @@ Containerized environments for popular Neovim distributions and quick starters. 
 
 ### Neovim
 
-- Latest 0.11.x (built from source)
+- 0.10.1: Latest release.
 
 ### Platforms
 
@@ -35,7 +35,6 @@ Containerized environments for popular Neovim distributions and quick starters. 
 
 ### Base Images
 
-- **Ubuntu 24.04**: Latest LTS release.
 - **Alpine 3.20**: Latest release.
 
 ### Pre-installed Tools
@@ -54,10 +53,10 @@ Containerized environments for popular Neovim distributions and quick starters. 
 
 ### Languages Tooling/Runtimes
 
-- Python 3.12.6
-- Golang 1.23.1
-- Rust 1.81.0
-- Node 20.17.0
+- **Python**: 3.12.6
+- **Golang**: 1.23.1
+- **Rust**: 1.81.0
+- **Node**: 20.17.0
 
 ## Installation
 
@@ -66,7 +65,6 @@ Containerized environments for popular Neovim distributions and quick starters. 
 You can pull the pre-built Docker images from GitHub Container Registry.
 
 ```shell
-docker pull ghcr.io/helton/neovim:kickstart.nvim-ubuntu-24.04
 docker pull ghcr.io/helton/neovim:kickstart.nvim-alpine-3.20
 ```
 
@@ -77,21 +75,22 @@ docker pull ghcr.io/helton/neovim:kickstart.nvim-alpine-3.20
 To run Neovim using the Docker image:
 
 ```shell
-docker run --rm -it ghcr.io/helton/neovim:kickstart.nvim-ubuntu-24.04
+docker run --rm -it ghcr.io/helton/neovim:kickstart.nvim-alpine-3.20
 ```
 
 Or, to open Neovim in a specific directory:
 
 ```shell
-docker run --rm -it -v $(pwd)/app:/app -w /app ghcr.io/helton/neovim:kickstart.nvim-ubuntu-24.04
+docker run --rm -it -v $(pwd)/app:/app -w /app ghcr.io/helton/neovim:kickstart.nvim-alpine-3.20
 ```
 
 Example commands:
 
 ```shell
 docker run --rm -it -v ${PWD}/app:/app -w /app ghcr.io/helton/neovim:kickstart.nvim-alpine-3.20
-docker run --rm -it -v ${PWD}/app:/app -w /app ghcr.io/helton/neovim:kickstart.nvim-alpine-3.20
-docker run --rm -it -v ${PWD}/app:/app -w /app ghcr.io/helton/neovim:kickstart.nvim-ubuntu-24.04
+docker run --rm -it -v ${PWD}/app:/app -w /app ghcr.io/helton/neovim:lazyvim-alpine-3.20
+docker run --rm -it -v ${PWD}/app:/app -w /app ghcr.io/helton/neovim:nvchad-alpine-3.20
+docker run --rm -it -v ${PWD}/app:/app -w /app ghcr.io/helton/neovim:astronvim-alpine-3.20
 ```
 
 ## Customization
@@ -133,8 +132,13 @@ To run built images locally, use commands like the following:
 
 ```shell
 docker run --rm -it -v ${PWD}/app:/app -w /app neovim:kickstart.nvim-alpine-3.20-amd64
-docker run --rm -it -v ${PWD}/app:/app -w /app neovim:kickstart.nvim-alpine-3.20-amd64
-docker run --rm -it -v ${PWD}/app:/app -w /app neovim:kickstart.nvim-ubuntu-24.04-amd64
+docker run --rm -it -v ${PWD}/app:/app -w /app neovim:kickstart.nvim-alpine-3.20-arm64
+docker run --rm -it -v ${PWD}/app:/app -w /app neovim:lazyvim-alpine-3.20-amd64
+docker run --rm -it -v ${PWD}/app:/app -w /app neovim:lazyvim-alpine-3.20-arm64
+docker run --rm -it -v ${PWD}/app:/app -w /app neovim:nvchad-alpine-3.20-amd64
+docker run --rm -it -v ${PWD}/app:/app -w /app neovim:nvchad-alpine-3.20-arm64
+docker run --rm -it -v ${PWD}/app:/app -w /app neovim:astronvim-alpine-3.20-amd64
+docker run --rm -it -v ${PWD}/app:/app -w /app neovim:astronvim-alpine-3.20-arm64
 ```
 
 ## Contributing
