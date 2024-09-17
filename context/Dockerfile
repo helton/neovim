@@ -32,14 +32,13 @@ RUN if [ -x "$(command -v fdfind)" ]; then \
     fi
 
 RUN if [ -x "$(command -v apt-get)" ]; then \
-        curl -s https://api.github.com/repos/neovim/neovim/releases/latest \
-            | grep "browser_download_url.*nvim-linux64.tar.gz" \
-            | cut -d '"' -f 4 \
-            | wget -qi - && \
-        tar xzf nvim-linux64.tar.gz && \
-        mv nvim-linux64 /opt/neovim && \
-        ln -s /opt/neovim/bin/nvim /usr/local/bin/nvim && \
-        rm nvim-linux64.tar.gz; \
+        git clone --depth 1 https://github.com/neovim/neovim.git /tmp/neovim && \
+        cd /tmp/neovim && \
+        make CMAKE_BUILD_TYPE=Release && \
+        make install && \
+        cd / && \
+        rm -rf /tmp/neovim && \
+        nvim --version; \
     elif [ -x "$(command -v apk)" ]; then \
         git clone --depth 1 https://github.com/neovim/neovim.git /tmp/neovim && \
         cd /tmp/neovim && \

@@ -11,7 +11,13 @@ Containerized environments for popular Neovim distributions and quick starters. 
 - **Multiple Neovim Configurations**: Supports various Neovim configurations and quick starters like [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim), [LazyVim](https://github.com/LazyVim/LazyVim), [NVChad](https://github.com/NvChad/NVChad), and [AstroVim](https://github.com/AstroNvim/AstroNvim).
 - **Customizable**: Easily map your own configurations and keybindings via Docker volumes.
 
-## Supported Platforms
+## Support Details
+
+### Neovim
+
+- Latest 0.11.x (built from source)
+
+### Platforms
 
 - **Linux Architectures**:
   - `linux/amd64`
@@ -39,7 +45,6 @@ Containerized environments for popular Neovim distributions and quick starters. 
 - `fd-find`: Simple, fast, and user-friendly alternative to `find`.
 - `fzf`: A general-purpose command-line fuzzy finder.
 - `git`: Version control system.
-- `neovim`: Extensible Vim-based text editor.
 - `ripgrep`: Line-oriented search tool that recursively searches directories.
 - `wget`: Non-interactive network downloader.
 - `zoxide`: A smarter `cd` command.
